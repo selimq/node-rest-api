@@ -29,3 +29,10 @@ export function validateLogin(body) {
   });
   return schema.validate(body);
 }
+
+export function validateForgotPassword(body) {
+  const schema = Joi.object({
+    password: passwordSchema,
+  });
+  return schema.validate(body);
+}

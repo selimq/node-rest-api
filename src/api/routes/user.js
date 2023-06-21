@@ -4,8 +4,8 @@ import {
   //   changePassword,
   //   deleteUser,
   //   editUser,
-  //   forgotPassword,
-  //   getUser,
+  // forgotPassword,
+  getUser,
   login,
   logout,
   //   refreshToken,
@@ -22,14 +22,14 @@ router.post("/login", login);
 router.post("/logout", auth, logout);
 router.get("/verify", verify);
 // router.post('/refresh-token', refreshToken);
-// router.post('/forgot-password', auth, forgotPassword);
+//router.post("/forgot-password", auth, forgotPassword);
 router.post("/send-verification-email", sendVerificationEmail);
 
 // // EDIT
 // router.post('/change-password', auth, changePassword);
 // router.put('/', auth, imageUpload, editUser);
 
-// router.get('/', auth, getUser);
+router.get("/", auth, getUser);
 // router.delete('/', auth, deleteUser);
 
 export default router;

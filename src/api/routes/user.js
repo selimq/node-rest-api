@@ -7,19 +7,19 @@ import {
   //   forgotPassword,
   //   getUser,
   login,
-  //   logout,
+  logout,
   //   refreshToken,
   sendVerificationEmail,
   verify,
 } from "../controllers/user/index.js";
-//import { auth, imageUpload } from "../middlewares/index.js";
+import { auth } from "../middlewares/index.js";
 
 const router = Router();
 
 // AUTH
 router.post("/", register);
 router.post("/login", login);
-// router.post('/logout', auth, logout);
+router.post("/logout", auth, logout);
 router.get("/verify", verify);
 // router.post('/refresh-token', refreshToken);
 // router.post('/forgot-password', auth, forgotPassword);

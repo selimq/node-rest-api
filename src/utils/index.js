@@ -1,6 +1,6 @@
 export { default as logger } from "./logger/logger.js";
 export { default as getText } from "./localization/get_text.js";
-export { default as sendCodeToEmail } from "./email/send_email.js";
+export { default as sendVerificaitonEmail } from "./email/send_email.js";
 export { turkishToEnglish } from "./helpers/local_text_helper.js";
 export {
   signAccessToken,

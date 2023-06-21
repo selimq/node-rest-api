@@ -1,7 +1,7 @@
 export default {
   verificationCodeTitle: "Doğrulama Kodu - (Uygulama Adı)",
   verificationCodeBody: "İşte doğrulama kodun:",
-  welcomeCode: '(Uygulama Adı)"na hoş geldin,',
+  welcomeCode: "Hoş geldin,",
   "00005": "Kod gönderebilmek için lütfen bütün bilgileri sağlayın.",
   "00006": "Erişim engellendi. Token sağlanmadı.",
   "00007": 'Geçersiz kullanıcı id"si.',

@@ -17,7 +17,7 @@ config.update({
 
 export default async (email, name, confirmToken, lang, type, req, res) => {
   new Promise(async (resolve, reject) => {
-    if (!email || !confirmCode || (lang !== "tr" && lang !== "en")) {
+    if (!email || (lang !== "tr" && lang !== "en")) {
       return res.status(400).send(errorHelper("00005", req)).end();
     }
 
@@ -30,11 +30,15 @@ export default async (email, name, confirmToken, lang, type, req, res) => {
     let body = "";
     //NOTE: You can customize the message that will be sent to the newly registered users according to your pleasure.
     if (type == "register") {
-      // body = `${getText(lang, 'welcomeCode')} ${name}!\r\n\r\n${getText(lang, 'verificationCodeBody')} ${confirmCode}`;
-
-      body = ` ${confirmToken}`;
+      body = `${getText(
+        lang,
+        "welcomeCode"
+      )} ${name}!\r\n\ Please click for confirm your account http://0.0.0.0:3000/api/user/verify?token=${confirmToken}`;
     } else {
-      body = `${getText(lang, "verificationCodeBody")} ${confirmCode}`;
+      body = `${getText(
+        lang,
+        "welcomeCode"
+      )} ${name}!\r\n\ Please click for confirm your account http://0.0.0.0:3000/api/user/verify?token=${confirmToken}`;
     }
 
     const emailInfo = {

@@ -15,8 +15,8 @@ export function signRefreshToken(userId) {
   return refreshToken;
 }
 export function emailVerificationToken(userId) {
-  const emailVerificationToken = sign({ _id: userId }, jwtSecretKey, {
+  const verificationToken = sign({ _id: userId }, jwtSecretKey, {
     expiresIn: "15m",
   });
-  return emailVerificationToken;
+  return verificationToken;
 }

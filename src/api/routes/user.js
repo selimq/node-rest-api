@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  register,
   //   changePassword,
   //   deleteUser,
   //   editUser,
@@ -8,7 +7,8 @@ import {
   getUser,
   login,
   logout,
-  //   refreshToken,
+  refreshToken,
+  register,
   sendVerificationEmail,
   verify,
 } from "../controllers/user/index.js";
@@ -21,7 +21,7 @@ router.post("/", register);
 router.post("/login", login);
 router.post("/logout", auth, logout);
 router.get("/verify", verify);
-// router.post('/refresh-token', refreshToken);
+router.post("/refresh-token", refreshToken);
 //router.post("/forgot-password", auth, forgotPassword);
 router.post("/send-verification-email", sendVerificationEmail);
 

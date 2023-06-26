@@ -1,9 +1,9 @@
 const pino = require("pino");
 
 const { Assert: assert } = require("./assert");
-const { ValidatorNano: validator } = require("./validator/validator.js");
-const { SentryCatch } = require("./SentryCatch");
-const { AbstractLogger } = require("./AbstractLogger");
+const { ValidatorNano: validator } = require("./validator/validator");
+const { SentryCatch } = require("./sentry_catch");
+const { AbstractLogger } = require("./abstract_logger");
 
 const $ = Symbol("private scope");
 

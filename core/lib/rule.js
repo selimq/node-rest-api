@@ -8,7 +8,7 @@ class Rule {
     }
 
     this.validator = src.validator;
-    this.desription = src.desription;
+    this.desrciption = src.description;
     this.example = src.example || undefined;
   }
 }

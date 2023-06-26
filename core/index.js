@@ -12,6 +12,8 @@ const { BaseMiddleware } = require("./lib/base_middleware");
 const { BaseConfig } = require("./lib/base_config");
 const { CookieEntity } = require("./lib/cookie_entity");
 const { InMemoryCache } = require("./lib/in_memory_cache");
+const { Server } = require("./lib/server");
+
 module.exports = {
   assert: Assert,
   Validator,
@@ -29,4 +31,6 @@ module.exports = {
   BaseModel,
   BaseMiddleware,
   BaseConfig,
+
+  Server,
 };

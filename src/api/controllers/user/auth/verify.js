@@ -1,13 +1,13 @@
 import { verify } from "jsonwebtoken";
 import { jwtSecretKey } from "../../../../config/index.js";
+import { Token, User } from "../../../../models/index.js";
 import {
   errorHelper,
+  getText,
+  ipHelper,
   signAccessToken,
   signRefreshToken,
-  ipHelper,
-  getText,
 } from "../../../../utils/index.js";
-import { Token, User } from "../../../../models/index.js";
 
 export default async (req, res) => {
   let token = req.query["token"];

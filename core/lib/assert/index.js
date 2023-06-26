@@ -1,5 +1,6 @@
 const { AssertionError } = require("./assertion_error.js");
 const { Rule } = require("../rule.js");
+const { Validator } = require("../validator/validator.js");
 
 const util = require("util");
 const { Stream } = require("stream");
@@ -8,10 +9,6 @@ const UUID_REGEXP =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const URL_REGEXP = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
 const validTypes = [Number, String, Object, Array, Boolean, Function];
-
-function isObject(v) {
-  return v && typeof v === "object" && !Array.isArray(v);
-}
 
 class Assert {
   static fail(actual, expected, message) {
@@ -37,15 +34,13 @@ class Assert {
     }
   }
   static defined(value, { message = "" } = {}) {
-    if (value === undefined) Assert.fail(value, "No undefined values", message);
+    if (!Validator.isDefined(value))
+      Assert.fail(value, "No undefined values", message);
   }
   static ok(value, { message = "", required = false } = {}) {
     if (!value && required) Assert.fail(value, "Truthful value", message);
-    if (value !== undefined && !value)
+    if (Validator.isDefined(value) && !value)
       Assert.fail(value, "Truthful value", message);
-  }
-  static defined(value, { message = "" } = {}) {
-    if (value === undefined) Assert.fail(value, "No undefined values", message);
   }
   static typeOf(value, type, message) {
     if (!validTypes.includes(type)) {
@@ -59,12 +54,12 @@ class Assert {
       );
     }
 
-    if (type === Number && typeof value === "number" && isNaN(value)) return;
-    if (type === String && typeof value === "string") return;
-    if (type === Object && isObject(value)) return;
-    if (type === Array && Array.isArray(value)) return;
-    if (type === Boolean && typeof value === "boolean") return;
-    if (type === Function && typeof value === "function") return;
+    if (type === Number && Validator.isNumber(value)) return;
+    if (type === String && Validator.isString(value)) return;
+    if (type === Object && Validator.isObject(value)) return;
+    if (type === Array && Validator.isArray(value)) return;
+    if (type === Boolean && Validator.isBoolean(value)) return;
+    if (type === Function && Validator.isFunc(value)) return;
 
     Assert.fail(value, type, message);
   }
@@ -74,7 +69,7 @@ class Assert {
     { required = false, notEmpty = false, message = "" } = {}
   ) {
     if (required || notEmpty) Assert.typeOf(value, Array, message);
-    if (value !== undefined) Assert.typeOf(value, Array, message);
+    if (Validator.isDefined(value)) Assert.typeOf(value, Array, message);
     if (value && !value.length && notEmpty)
       Assert.fail(value, "Not empty array");
   }
@@ -115,29 +110,29 @@ class Assert {
     { required = false, notEmpty = false, message = "" } = {}
   ) {
     if (required || notEmpty) Assert.typeOf(value, Object, message);
-    if (value !== undefined) Assert.typeOf(value, Object, message);
+    if (Validator.isDefined(value)) Assert.typeOf(value, Object, message);
     if (notEmpty && !Object.keys(value).length)
       Assert.fail(value, "Not empty object", message);
   }
 
   static number(value, { required = false, message = "" } = {}) {
     if (required) Assert.typeOf(value, Number, message);
-    if (value !== undefined) Assert.typeOf(value, Number, message);
+    if (Validator.isDefined(value)) Assert.typeOf(value, Number, message);
   }
 
   static integer(value, { required = false, min, max, message = "" } = {}) {
-    const isInteger = Number.isInteger(value);
+    const isInteger = Validator.isInt(value);
 
     if (required && !isInteger) Assert.fail(value, "Integer", message);
-    if (value !== undefined && !isInteger)
+    if (Validator.isDefined(value) && !isInteger)
       Assert.fail(value, "Integer", message);
 
-    if (typeof min === "number") {
-      if (value !== undefined && isInteger && value < min)
+    if (Validator.isNumber(min)) {
+      if (Validator.isDefined(value) && isInteger && value < min)
         Assert.fail(value, `Minimal value: ${min}`, message);
     }
-    if (typeof max === "number") {
-      if (value !== undefined && isInteger && value > max)
+    if (Validator.isNumber(max)) {
+      if (Validator.isDefined(value) && isInteger && value > max)
         Assert.fail(value, `Maximum value: ${max}`, message);
     }
   }
@@ -147,14 +142,14 @@ class Assert {
     { required = false, notEmpty = false, message = "" } = {}
   ) {
     if (required || notEmpty) Assert.typeOf(value, String, message);
-    if (value !== undefined) Assert.typeOf(value, String, message);
-    if (value !== undefined && !value.trim().length && notEmpty)
+    if (Validator.isDefined(value)) Assert.typeOf(value, String, message);
+    if (Validator.isDefined(value) && !value.trim().length && notEmpty)
       Assert.fail(value, "Not empty string", message);
   }
 
   static boolean(value, { required = false, message = "" } = {}) {
     if (required) Assert.typeOf(value, Boolean, message);
-    if (value !== undefined) Assert.typeOf(value, Boolean, message);
+    if (Validator.isDefined(value)) Assert.typeOf(value, Boolean, message);
   }
 
   static buffer(
@@ -163,7 +158,7 @@ class Assert {
   ) {
     if (required && !Buffer.isBuffer(value))
       Assert.fail(value, "Buffer", message);
-    if (value !== undefined && !Buffer.isBuffer(value))
+    if (Validator.isDefined(value) && !Buffer.isBuffer(value))
       Assert.fail(value, "Buffer", message);
     if (!value.length && notEmpty)
       Assert.fail(value, "Not empty buffer", message);
@@ -171,37 +166,37 @@ class Assert {
 
   static date(value, { required = false, message = "" } = {}) {
     if (required) Assert.instanceOf(value, Date, message);
-    if (value !== undefined) Assert.instanceOf(value, Date, message);
+    if (Validator.isDefined(value)) Assert.instanceOf(value, Date, message);
   }
 
   static func(value, { required = false, message = "" } = {}) {
     if (required) Assert.typeOf(value, Function, message);
-    if (value !== undefined) Assert.instanceOf(value, Function, message);
+    if (Validator.isDefined(value)) Assert.instanceOf(value, Function, message);
   }
 
   static stream(value, { required = false, message = "" } = {}) {
     if (required) Assert.instanceOf(value, Stream, message);
-    if (value !== undefined) Assert.instanceOf(value, Stream, message);
+    if (Validator.isDefined(value)) Assert.instanceOf(value, Stream, message);
   }
 
   static id(value, { required = false, message = "" } = {}) {
     const int = Number(value);
-    const isPositiveInteger = Number.isInteger(int) && int >= 1;
-    const isUiid = UUID_REGEXP.test(value);
+    const isPositiveInteger = Validator.isInt(int) && int >= 1;
+    const isUiid = Validator.isUuid(value);
     const isValidId = isPositiveInteger || isUiid;
     if (!isValidId && required) Assert.fail(value, "UUID or Number", message);
-    if (value !== undefined && !isValidId)
+    if (Validator.isDefined(value) && !isValidId)
       Assert.fail(value, "UUID or Number", message);
   }
 
   static uuid(value, { required = false, message = "" } = {}) {
     Assert.string(value, { required, message });
-    if (value && !UUID_REGEXP.test(value)) Assert.fail(value, "UUID", message);
+    if (value && !Validator.isUuid(value)) Assert.fail(value, "UUID", message);
   }
 
   static url(value, { required = false, message = "" } = {}) {
     Assert.string(value, { required, message });
-    if (value && !URL_REGEXP.test(value)) Assert.fail(value, "URL", message);
+    if (value && !Validator.isUrl(value)) Assert.fail(value, "URL", message);
   }
 
   static validate(value, rule, { required = false, allowed = [] } = {}) {
@@ -219,13 +214,13 @@ class Assert {
     }
 
     if (required) {
-      if (typeof validationResult === "string")
+      if (Validator.isString(validationResult))
         Assert.fail(value, validationResult);
-      if (validationResult == false) Assert.fail(value, rule.description);
+      if (validationResult === false) Assert.fail(value, rule.description);
     }
 
-    if (value !== undefined && !required) {
-      if (typeof validationResult === "string")
+    if (Validator.isDefined(value) && !required) {
+      if (Validator.isString(validationResult))
         Assert.fail(value, validationResult);
       if (validationResult === false) Assert.fail(value, rule.description);
     }

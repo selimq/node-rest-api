@@ -4,7 +4,8 @@
   "description": "Node rest api",
   "main": "app.js",
   "scripts": {
-    "test": "mocha test/**/*.js --timeout 10000",
+    "test": "mocha test/**/*.js --timeout 10000 ",
+    "testcore": "mocha ./core/test/**/*.js --timeout 10000 ",
     "coverage": "nyc --reporter=text mocha test/**/*.js",
     "start": "nodemon -r dotenv/config ./src/app.js"
   },

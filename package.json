@@ -4,7 +4,8 @@
   "description": "Node rest api",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/**/*.js --timeout 10000",
+    "coverage": "nyc --reporter=text mocha test/**/*.js",
     "start": "nodemon -r dotenv/config ./src/app.js"
   },
   "repository": {
@@ -34,9 +35,14 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.3",
-    "nodemon": "^2.0.22",
     "randomstring": "^1.3.0",
     "rate-limiter-flexible": "^2.4.1"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.22",
+    "nyc": "^15.1.0"
+  }
 }
